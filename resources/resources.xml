@@ -1,0 +1,19 @@
+<resources>
+    <bitmaps>
+        <bitmap id="bluetooth_on" filename="images/bluetooth.png">
+        		<palette><color>00AAFF</color></palette>
+        	</bitmap>	
+        <bitmap id="bluetooth_off" filename="images/bluetooth.png">
+        		<palette><color>555555</color></palette>
+        	</bitmap>	
+        <bitmap id="steps" filename="images/steps.png">
+        		<palette><color>00AA00</color></palette>
+        	</bitmap>	
+        <bitmap id="distance" filename="images/distance.png">
+        		<palette><color>FF0000</color></palette>
+        	</bitmap>	
+        <bitmap id="flame" filename="images/flame.png">
+        		<palette><color>FF0000</color></palette>
+        	</bitmap>	
+    </bitmaps>
+</resources>

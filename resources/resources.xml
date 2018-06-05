@@ -15,5 +15,8 @@
         <bitmap id="flame" filename="images/flame.png">
         		<palette><color>FF0000</color></palette>
         	</bitmap>	
+        <bitmap id="stairs" filename="images/stairs-up.png">
+        		<palette><color>FF0000</color></palette>
+        	</bitmap>	
     </bitmaps>
 </resources>

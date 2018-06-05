@@ -23,9 +23,9 @@ class BartWFView extends Ui.WatchFace {
 
 	const TIME_Y = 110;
 
-	const STATS_ICON_OFFSET_X 	= 6;
-	const STATS_VALUE_OFFSET_X 	= 67;
-	const STATS_UNIT_OFFSET_X 	= 72;
+	const STATS_ICON_OFFSET_X 	= 0;
+	const STATS_VALUE_OFFSET_X 	= 61;
+	const STATS_UNIT_OFFSET_X 	= 66;
 
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +46,7 @@ class BartWFView extends Ui.WatchFace {
 	var stepsIcon;
 	var distanceIcon;
 	var flameIcon;
+	var stairsIcon;
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,7 @@ class BartWFView extends Ui.WatchFace {
         stepsIcon = Ui.loadResource(Rez.Drawables.steps);        
         distanceIcon = Ui.loadResource(Rez.Drawables.distance);
         flameIcon = Ui.loadResource(Rez.Drawables.flame);
+        stairsIcon = Ui.loadResource(Rez.Drawables.stairs);
     }
 
     // The entry point for the View is onLayout(). This is called before the
@@ -152,11 +154,9 @@ class BartWFView extends Ui.WatchFace {
 	}
 
 	function drawStatusIcons(dc, deviceSettings) {
-		dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_TRANSPARENT);
 		if (deviceSettings.phoneConnected) {
+			dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_BLACK);
 			dc.drawBitmap(centerX - 36, 6, bluetoothIcon_on);
-		} else {
-			dc.drawBitmap(centerX - 36, 6, bluetoothIcon_off);
 		}
 	}
 	
@@ -179,22 +179,25 @@ class BartWFView extends Ui.WatchFace {
 
 	function drawActivityStats(dc, activityMonitorInfo) {
 		// Draw icons
-		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 67, distanceIcon);
-		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 45, flameIcon);
+		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 77, distanceIcon);
+		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 56, flameIcon);
+		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 35, stairsIcon);
 
 		// Draw values
 		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 71, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 49, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 81, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, activityMonitorInfo.floorsClimbed, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		// Draw units
 		dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 71, Gfx.FONT_XTINY, "km", Gfx.TEXT_JUSTIFY_LEFT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 49, Gfx.FONT_XTINY, "kCal", Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 81, Gfx.FONT_XTINY, "km", Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, "kCal", Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, " / " + activityMonitorInfo.floorsClimbedGoal, Gfx.TEXT_JUSTIFY_LEFT);
 		
 		// Draw border
-		dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
-		dc.drawRectangle(centerX, centerY - 71, 120, 46);
+//		dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
+//		dc.drawRectangle(centerX, centerY - 71, 120, 46);
 	}
 	
 	function drawStepStats(dc, activityMonitorInfo) {
@@ -207,9 +210,10 @@ class BartWFView extends Ui.WatchFace {
 		
 		dc.drawBitmap(stepStatsCenterX - 12, stepStatsCenterY + 15, stepsIcon);
 		dc.setColor(Gfx.COLOR_DK_GRAY, COLOR_BACKGROUND);
-		dc.setPenWidth(5);	
+		dc.setPenWidth(3);	
 		dc.drawArc(stepStatsCenterX, stepStatsCenterY, 32, Gfx.ARC_CLOCKWISE, startAngle, fullAngle); 
 		if (targetAngle != startAngle) {
+			dc.setPenWidth(6);
 			dc.setColor(Gfx.COLOR_GREEN, COLOR_BACKGROUND);
 			dc.drawArc(stepStatsCenterX, stepStatsCenterY, 32, Gfx.ARC_CLOCKWISE, startAngle, targetAngle);
 		} 

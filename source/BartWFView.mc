@@ -176,8 +176,10 @@ class BartWFView extends Ui.WatchFace {
 	function drawActivityStats(dc, activityMonitorInfo) {
 		// Draw values
 		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
+//		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
+//		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, "8.9", Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, "2373", Gfx.TEXT_JUSTIFY_RIGHT);
 
 		// Draw units
 		dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
@@ -220,16 +222,20 @@ class BartWFView extends Ui.WatchFace {
 
 		// Draw arcs
 		drawArc(dc, stepStatsCenterX, stepStatsCenterY, bigArcRadius, 3, Gfx.COLOR_GREEN, 
-			activityMonitorInfo.steps, activityMonitorInfo.stepGoal);
+			10848, activityMonitorInfo.stepGoal);
+//			activityMonitorInfo.steps, activityMonitorInfo.stepGoal);
 		drawArc(dc, activeMinutesCenterX, activeMinutesCenterY, smallArcRadius, 2, Gfx.COLOR_PURPLE, 
-			activityMonitorInfo.activeMinutesWeek.total, activityMonitorInfo.activeMinutesWeekGoal);
+//			activityMonitorInfo.activeMinutesWeek.total, activityMonitorInfo.activeMinutesWeekGoal);
+			100, activityMonitorInfo.activeMinutesWeekGoal);
 		drawArc(dc, floorsClimbedCenterX, floorsClimbedCenterY, smallArcRadius, 2, Gfx.COLOR_YELLOW, 
-			activityMonitorInfo.floorsClimbed, activityMonitorInfo.floorsClimbedGoal);
+			11, activityMonitorInfo.floorsClimbedGoal);
+//			activityMonitorInfo.floorsClimbed, activityMonitorInfo.floorsClimbedGoal);
 		 
 		// Draw #steps
 		dc.setPenWidth(1);
 		dc.setColor(Gfx.COLOR_GREEN, Gfx.COLOR_BLACK);
-		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, activityMonitorInfo.steps, Gfx.TEXT_JUSTIFY_CENTER);
+		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, "10848", Gfx.TEXT_JUSTIFY_CENTER);
+//		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, activityMonitorInfo.steps, Gfx.TEXT_JUSTIFY_CENTER);
 	}
 }
 

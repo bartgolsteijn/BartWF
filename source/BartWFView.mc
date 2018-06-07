@@ -23,9 +23,9 @@ class BartWFView extends Ui.WatchFace {
 
 	const TIME_Y = 110;
 
-	const STATS_ICON_OFFSET_X 	= 0;
-	const STATS_VALUE_OFFSET_X 	= 61;
-	const STATS_UNIT_OFFSET_X 	= 66;
+	const STATS_ICON_OFFSET_X 	= 10;
+	const STATS_VALUE_OFFSET_X 	= 68;
+	const STATS_UNIT_OFFSET_X 	= 73;
 
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,10 +44,8 @@ class BartWFView extends Ui.WatchFace {
 	var bluetoothIcon_on;
 	var bluetoothIcon_off;
 	var stepsIcon;
-	var distanceIcon;
-	var flameIcon;
 	var stairsIcon;
-
+	var activeIcon;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIFECYCLE FUNCTIONS
@@ -59,9 +57,8 @@ class BartWFView extends Ui.WatchFace {
         bluetoothIcon_on = Ui.loadResource(Rez.Drawables.bluetooth_on);
         bluetoothIcon_off = Ui.loadResource(Rez.Drawables.bluetooth_off);
         stepsIcon = Ui.loadResource(Rez.Drawables.steps);        
-        distanceIcon = Ui.loadResource(Rez.Drawables.distance);
-        flameIcon = Ui.loadResource(Rez.Drawables.flame);
         stairsIcon = Ui.loadResource(Rez.Drawables.stairs);
+        activeIcon = Ui.loadResource(Rez.Drawables.active);
     }
 
     // The entry point for the View is onLayout(). This is called before the
@@ -100,7 +97,7 @@ class BartWFView extends Ui.WatchFace {
 		
 		var activityMonitorInfo = ActivityMonitor.getInfo();
 		drawActivityStats(dc, activityMonitorInfo);
-		drawStepStats(dc, activityMonitorInfo);
+		drawArcs(dc, activityMonitorInfo);
 				
 		drawBatteryLevel(dc, System.getSystemStats().battery);
 		drawStatusIcons(dc, System.getDeviceSettings());
@@ -155,16 +152,15 @@ class BartWFView extends Ui.WatchFace {
 
 	function drawStatusIcons(dc, deviceSettings) {
 		if (deviceSettings.phoneConnected) {
-			dc.setColor(Gfx.COLOR_BLUE, Gfx.COLOR_BLACK);
-			dc.drawBitmap(centerX - 36, 6, bluetoothIcon_on);
+			dc.drawBitmap(centerX + 22, 4, bluetoothIcon_on);
 		}
 	}
 	
 	function drawBatteryLevel(dc, batteryLevel) {
 		// Draw battery
-		dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
-		dc.drawRectangle(centerX - 8, 9, 44, 12);
-		dc.fillRectangle(centerX + 36, 12, 2, 6);
+		dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
+		dc.drawRectangle(centerX - 32, 6, 44, 12);
+		dc.fillRectangle(centerX + 12, 9, 2, 6);
 		
 		// Draw battery level indicator
 		if (batteryLevel < 15.0) {
@@ -174,49 +170,63 @@ class BartWFView extends Ui.WatchFace {
 		} else {
 			dc.setColor(Gfx.COLOR_GREEN, COLOR_BACKGROUND);
 		}
-		dc.fillRectangle(centerX - 6, 11, (batteryLevel / 2.5), 8);
+		dc.fillRectangle(centerX - 30, 8, (batteryLevel / 2.5), 8);
 	}
 
 	function drawActivityStats(dc, activityMonitorInfo) {
-		// Draw icons
-		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 77, distanceIcon);
-		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 56, flameIcon);
-		dc.drawBitmap(centerX + STATS_ICON_OFFSET_X, centerY - 35, stairsIcon);
-
 		// Draw values
 		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 81, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, activityMonitorInfo.floorsClimbed, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		// Draw units
 		dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 81, Gfx.FONT_XTINY, "km", Gfx.TEXT_JUSTIFY_LEFT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, "kCal", Gfx.TEXT_JUSTIFY_LEFT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, " / " + activityMonitorInfo.floorsClimbedGoal, Gfx.TEXT_JUSTIFY_LEFT);
-		
-		// Draw border
-//		dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
-//		dc.drawRectangle(centerX, centerY - 71, 120, 46);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, "km", Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, "kCal", Gfx.TEXT_JUSTIFY_LEFT);
 	}
 	
-	function drawStepStats(dc, activityMonitorInfo) {
-		var stepStatsCenterX = centerX - 60;
-		var stepStatsCenterY = 72;
+	function drawArc(dc, centerX, centerY, radius, lineWidth, color, value, goal) {
 		var startAngle = 240;
 		var fullAngle = 300;
-		var actualSteps = (activityMonitorInfo.steps > activityMonitorInfo.stepGoal ? activityMonitorInfo.stepGoal : activityMonitorInfo.steps);		
-		var targetAngle = (startAngle - (fullAngle * actualSteps / activityMonitorInfo.stepGoal)) % 360;
 		
-		dc.drawBitmap(stepStatsCenterX - 12, stepStatsCenterY + 15, stepsIcon);
+		var toppedValue = value > goal ? goal : value;
+		var toppedValueAngle = (startAngle - (fullAngle * toppedValue / goal)) % 360;
+		
 		dc.setColor(Gfx.COLOR_DK_GRAY, COLOR_BACKGROUND);
-		dc.setPenWidth(3);	
-		dc.drawArc(stepStatsCenterX, stepStatsCenterY, 32, Gfx.ARC_CLOCKWISE, startAngle, fullAngle); 
-		if (targetAngle != startAngle) {
-			dc.setPenWidth(6);
-			dc.setColor(Gfx.COLOR_GREEN, COLOR_BACKGROUND);
-			dc.drawArc(stepStatsCenterX, stepStatsCenterY, 32, Gfx.ARC_CLOCKWISE, startAngle, targetAngle);
-		} 
+		dc.setPenWidth(lineWidth);	
+		dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, fullAngle); 
+		
+		if (toppedValueAngle != startAngle) {
+			dc.setPenWidth(lineWidth + 3);
+			dc.setColor(color, COLOR_BACKGROUND);
+			dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, toppedValueAngle);
+		}
+	}
+	
+	function drawArcs(dc, activityMonitorInfo) {		
+		var stepStatsCenterX = 60;
+		var stepStatsCenterY = 72;
+		var activeMinutesCenterX = 120;
+		var activeMinutesCenterY = 50;
+		var floorsClimbedCenterX = 120;
+		var floorsClimbedCenterY = 92;
+		var bigArcRadius = 32;
+		var smallArcRadius = 18;
+	
+		// Draw icons
+		dc.drawBitmap(stepStatsCenterX - 12, stepStatsCenterY + 15, stepsIcon);
+		dc.drawBitmap(activeMinutesCenterX - 8, activeMinutesCenterY - 8, activeIcon);
+		dc.drawBitmap(floorsClimbedCenterX - 8, floorsClimbedCenterY - 8, stairsIcon);
+
+		// Draw arcs
+		drawArc(dc, stepStatsCenterX, stepStatsCenterY, bigArcRadius, 3, Gfx.COLOR_GREEN, 
+			activityMonitorInfo.steps, activityMonitorInfo.stepGoal);
+		drawArc(dc, activeMinutesCenterX, activeMinutesCenterY, smallArcRadius, 2, Gfx.COLOR_PURPLE, 
+			activityMonitorInfo.activeMinutesWeek.total, activityMonitorInfo.activeMinutesWeekGoal);
+		drawArc(dc, floorsClimbedCenterX, floorsClimbedCenterY, smallArcRadius, 2, Gfx.COLOR_YELLOW, 
+			activityMonitorInfo.floorsClimbed, activityMonitorInfo.floorsClimbedGoal);
+		 
+		// Draw #steps
 		dc.setPenWidth(1);
 		dc.setColor(Gfx.COLOR_GREEN, Gfx.COLOR_BLACK);
 		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, activityMonitorInfo.steps, Gfx.TEXT_JUSTIFY_CENTER);

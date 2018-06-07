@@ -5,6 +5,8 @@ Time and date are clearly visible.
 
 Also shows:
 - Number of steps and progress towards daily step goal
+- Floors climbed status
+- Active minutes per week status
 - Battery status
 - Connection to phone
 - Distance and kCal for current day
@@ -16,4 +18,4 @@ Also shows:
 - Make configurable
 
 # Credits 
-Icons made by Freepik from www.flaticon.com 
+Steps and phone icons made by Freepik from www.flaticon.com 

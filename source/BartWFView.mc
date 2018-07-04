@@ -92,6 +92,12 @@ class BartWFView extends Ui.WatchFace {
         dc.clearClip();
                 
 		clockTime = Sys.getClockTime();
+		if (clockTime.hour == 0 && clockTime.min == 0) {
+			// midnight reset
+			dc.setColor(COLOR_BACKGROUND, COLOR_BACKGROUND);
+			dc.fillCircle(width / 2, height / 2, width / 2 + 2);
+		}
+
 		drawHourAndMinute(dc, clockTime);
 		drawDate(dc);
 		
@@ -176,10 +182,8 @@ class BartWFView extends Ui.WatchFace {
 	function drawActivityStats(dc, activityMonitorInfo) {
 		// Draw values
 		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
-//		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
-//		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, "8.9", Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, "2373", Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		// Draw units
 		dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
@@ -222,20 +226,16 @@ class BartWFView extends Ui.WatchFace {
 
 		// Draw arcs
 		drawArc(dc, stepStatsCenterX, stepStatsCenterY, bigArcRadius, 3, Gfx.COLOR_GREEN, 
-			10848, activityMonitorInfo.stepGoal);
-//			activityMonitorInfo.steps, activityMonitorInfo.stepGoal);
+			activityMonitorInfo.steps, activityMonitorInfo.stepGoal);
 		drawArc(dc, activeMinutesCenterX, activeMinutesCenterY, smallArcRadius, 2, Gfx.COLOR_PURPLE, 
-//			activityMonitorInfo.activeMinutesWeek.total, activityMonitorInfo.activeMinutesWeekGoal);
-			100, activityMonitorInfo.activeMinutesWeekGoal);
+			activityMonitorInfo.activeMinutesWeek.total, activityMonitorInfo.activeMinutesWeekGoal);
 		drawArc(dc, floorsClimbedCenterX, floorsClimbedCenterY, smallArcRadius, 2, Gfx.COLOR_YELLOW, 
-			11, activityMonitorInfo.floorsClimbedGoal);
-//			activityMonitorInfo.floorsClimbed, activityMonitorInfo.floorsClimbedGoal);
+			activityMonitorInfo.floorsClimbed, activityMonitorInfo.floorsClimbedGoal);
 		 
 		// Draw #steps
 		dc.setPenWidth(1);
 		dc.setColor(Gfx.COLOR_GREEN, Gfx.COLOR_BLACK);
-		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, "10848", Gfx.TEXT_JUSTIFY_CENTER);
-//		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, activityMonitorInfo.steps, Gfx.TEXT_JUSTIFY_CENTER);
+		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, activityMonitorInfo.steps, Gfx.TEXT_JUSTIFY_CENTER);
 	}
 }
 

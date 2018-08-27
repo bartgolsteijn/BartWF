@@ -1,19 +1,22 @@
 <resources>
     <bitmaps>
         <bitmap id="bluetooth_on" filename="images/bluetooth.png">
-        		<palette><color>00AAFF</color></palette>
+			<palette><color>00AAFF</color></palette>
        	</bitmap>	
         <bitmap id="bluetooth_off" filename="images/bluetooth.png">
-        		<palette><color>555555</color></palette>
+			<palette><color>555555</color></palette>
        	</bitmap>	
         <bitmap id="steps" filename="images/steps.png">
-        		<palette><color>00AA00</color></palette>
+			<palette><color>00AA00</color></palette>
        	</bitmap>	
         <bitmap id="stairs" filename="images/stairs-up.png">
-        		<palette><color>BBBBBB</color></palette>
+			<palette><color>BBBBBB</color></palette>
        	</bitmap>	
         <bitmap id="active" filename="images/active.png">
-        		<palette><color>BBBBBB</color></palette>
+			<palette><color>BBBBBB</color></palette>
        	</bitmap>	
+        <bitmap id="heart" filename="images/heart.png">
+			<palette><color>FF0000</color></palette>
+        </bitmap>
     </bitmaps>
 </resources>

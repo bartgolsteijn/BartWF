@@ -46,6 +46,7 @@ class BartWFView extends Ui.WatchFace {
 	var stepsIcon;
 	var stairsIcon;
 	var activeIcon;
+	var heartIcon;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIFECYCLE FUNCTIONS
@@ -59,6 +60,7 @@ class BartWFView extends Ui.WatchFace {
         stepsIcon = Ui.loadResource(Rez.Drawables.steps);        
         stairsIcon = Ui.loadResource(Rez.Drawables.stairs);
         activeIcon = Ui.loadResource(Rez.Drawables.active);
+        heartIcon = Ui.loadResource(Rez.Drawables.heart);
     }
 
     // The entry point for the View is onLayout(). This is called before the
@@ -111,11 +113,13 @@ class BartWFView extends Ui.WatchFace {
 		drawSeparator(dc);
 
 		drawSecond(dc, clockTime);
+		drawHeartRate(dc, getHeartRate());
     }
 
 	function onPartialUpdate(dc) {
         clockTime = Sys.getClockTime();
 		drawSecond(dc, clockTime);
+		drawHeartRate(dc, getHeartRate());
 	}
 
     // Called when this View is removed from the screen. Save the
@@ -124,10 +128,47 @@ class BartWFView extends Ui.WatchFace {
     function onHide() {
     }
 
+	function getHeartRate() {
+		var heartRate = null;
+		var activityInfo = Activity.getActivityInfo();
+
+		if (null != activityInfo) {
+			if (null != activityInfo.currentHeartRate) {
+				heartRate = (activityInfo.currentHeartRate).format("%5d");
+			}
+		}
+
+		if (null == heartRate) {
+			var hrSample = ActivityMonitor.getHeartRateHistory(1, true).next();
+			if ( (hrSample != null) && (hrSample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE) ) {
+				heartRate = (hrSample.heartRate).format("%5d");
+			} else {
+				heartRate =  "----";
+			}
+		}
+		return heartRate;
+	}
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DRAWING FUNCTIONS
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// 1 Hz
+	function drawSecond(dc, clockTime) {
+		var secX = centerX + 85;
+		var secY = TIME_Y + 16;
+		dc.setClip(secX, secY, 30, 30);
+        dc.setColor(COLOR_SECONDS, COLOR_BACKGROUND);
+        dc.drawText(secX, secY, Gfx.FONT_SYSTEM_MEDIUM, clockTime.sec.format("%02d"), Gfx.TEXT_JUSTIFY_LEFT);
+	}
+
+	function drawHeartRate(dc, heartRate) {
+		dc.setClip(centerX + 34, centerY - 77, 39, 15);
+		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 81, Gfx.FONT_XTINY, heartRate, Gfx.TEXT_JUSTIFY_RIGHT);
+	}
+
+	// 1/60 Hz
 	function drawSeparator(dc) {
 		dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
         dc.drawLine(0, centerY + 1, width, centerY + 1);
@@ -139,14 +180,6 @@ class BartWFView extends Ui.WatchFace {
 		dc.setColor(COLOR_HOURS_MINUTES, COLOR_BACKGROUND);
 		var timeString = clockTime.hour.format("%02d") + ":" + clockTime.min.format("%02d");
 		dc.drawText(centerX - 96, TIME_Y, Gfx.FONT_SYSTEM_NUMBER_THAI_HOT, timeString, Gfx.TEXT_JUSTIFY_LEFT);
-	}
-
-	function drawSecond(dc, clockTime) {
-		var secX = centerX + 85;
-		var secY = TIME_Y + 16;
-		dc.setClip(secX, secY, 30, 30);
-        dc.setColor(COLOR_SECONDS, COLOR_BACKGROUND);
-        dc.drawText(secX, secY, Gfx.FONT_SYSTEM_MEDIUM, clockTime.sec.format("%02d"), Gfx.TEXT_JUSTIFY_LEFT);				
 	}
 
 	function drawDate(dc) {
@@ -182,15 +215,16 @@ class BartWFView extends Ui.WatchFace {
 	function drawActivityStats(dc, activityMonitorInfo) {
 		// Draw values
 		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
-		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
+		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		// Draw units
+		dc.drawBitmap(centerX + STATS_UNIT_OFFSET_X + 1, centerY - 76, heartIcon);
 		dc.setColor(Gfx.COLOR_LT_GRAY, Gfx.COLOR_TRANSPARENT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 70, Gfx.FONT_XTINY, "km", Gfx.TEXT_JUSTIFY_LEFT);
-		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 48, Gfx.FONT_XTINY, "kCal", Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, "km", Gfx.TEXT_JUSTIFY_LEFT);
+		dc.drawText(centerX + STATS_UNIT_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, "kCal", Gfx.TEXT_JUSTIFY_LEFT);
 	}
-	
+
 	function drawArc(dc, centerX, centerY, radius, lineWidth, color, value, goal) {
 		var startAngle = 240;
 		var fullAngle = 300;

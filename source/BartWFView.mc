@@ -132,10 +132,8 @@ class BartWFView extends Ui.WatchFace {
 		var heartRate = null;
 		var activityInfo = Activity.getActivityInfo();
 
-		if (null != activityInfo) {
-			if (null != activityInfo.currentHeartRate) {
-				heartRate = (activityInfo.currentHeartRate).format("%5d");
-			}
+		if (activityInfo != null && activityInfo.currentHeartRate != null) {
+			heartRate = (activityInfo.currentHeartRate).format("%5d");
 		}
 
 		if (null == heartRate) {
@@ -197,7 +195,7 @@ class BartWFView extends Ui.WatchFace {
 	
 	function drawBatteryLevel(dc, batteryLevel) {
 		// Draw battery
-		dc.setColor(Gfx.COLOR_DK_GRAY, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(Gfx.COLOR_DK_GRAY, COLOR_BACKGROUND);
 		dc.drawRectangle(centerX - 32, 6, 44, 12);
 		dc.fillRectangle(centerX + 12, 9, 2, 6);
 		
@@ -216,6 +214,7 @@ class BartWFView extends Ui.WatchFace {
 		// Draw values
 		dc.setColor(Gfx.COLOR_YELLOW, COLOR_BACKGROUND);
 		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 59, Gfx.FONT_XTINY, (activityMonitorInfo.distance / 100000.0).format("%5.1f"), Gfx.TEXT_JUSTIFY_RIGHT);
+			
 		dc.drawText(centerX + STATS_VALUE_OFFSET_X, centerY - 37, Gfx.FONT_XTINY, activityMonitorInfo.calories, Gfx.TEXT_JUSTIFY_RIGHT);
 
 		// Draw units

@@ -26,7 +26,6 @@ class BartWFView extends Ui.WatchFace {
 	const STATS_ICON_OFFSET_X 	= 10;
 	const STATS_VALUE_OFFSET_X 	= 68;
 	const STATS_UNIT_OFFSET_X 	= 73;
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VARIABLES
@@ -190,19 +189,25 @@ class BartWFView extends Ui.WatchFace {
 	function drawStatusIcons(dc, deviceSettings) {
 		if (deviceSettings.phoneConnected) {
 			dc.drawBitmap(centerX + 22, 4, bluetoothIcon_on);
+		} else {
+			dc.setColor(COLOR_BACKGROUND, COLOR_BACKGROUND);
+			dc.fillRectangle(centerX + 22, 4, 16, 16); 
 		}
 	}
 	
 	function drawBatteryLevel(dc, batteryLevel) {
 		// Draw battery
+		dc.setColor(COLOR_BACKGROUND, COLOR_BACKGROUND);
+		dc.fillRectangle(centerX - 32, 6, 44, 12);
+		
 		dc.setColor(Gfx.COLOR_DK_GRAY, COLOR_BACKGROUND);
 		dc.drawRectangle(centerX - 32, 6, 44, 12);
 		dc.fillRectangle(centerX + 12, 9, 2, 6);
 		
 		// Draw battery level indicator
-		if (batteryLevel < 15.0) {
+		if (batteryLevel < 10.0) {
 			dc.setColor(Gfx.COLOR_RED, COLOR_BACKGROUND);
-		} else if (batteryLevel < 25.0) {
+		} else if (batteryLevel < 20.0) {
 			dc.setColor(Gfx.COLOR_ORANGE, COLOR_BACKGROUND);
 		} else {
 			dc.setColor(Gfx.COLOR_GREEN, COLOR_BACKGROUND);
@@ -267,7 +272,7 @@ class BartWFView extends Ui.WatchFace {
 		 
 		// Draw #steps
 		dc.setPenWidth(1);
-		dc.setColor(Gfx.COLOR_GREEN, Gfx.COLOR_BLACK);
+		dc.setColor(Gfx.COLOR_GREEN, COLOR_BACKGROUND);
 		dc.drawText(stepStatsCenterX, stepStatsCenterY - 11, Gfx.FONT_SYSTEM_XTINY, activityMonitorInfo.steps, Gfx.TEXT_JUSTIFY_CENTER);
 	}
 }

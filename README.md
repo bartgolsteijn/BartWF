@@ -4,6 +4,7 @@ Garmin VivoActive 3 Watchface.
 Time and date are clearly visible.
 
 Also shows:
+- Current heartrate
 - Number of steps and progress towards daily step goal
 - Floors climbed status
 - Active minutes per week status

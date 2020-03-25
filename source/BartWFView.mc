@@ -236,14 +236,21 @@ class BartWFView extends Ui.WatchFace {
 		var toppedValue = value > goal ? goal : value;
 		var toppedValueAngle = (startAngle - (fullAngle * toppedValue / goal)) % 360;
 		
+		// Erase leftovers
+		dc.setColor(COLOR_BACKGROUND, COLOR_BACKGROUND);
+		dc.setPenWidth(lineWidth + 4);	
+		dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, fullAngle);
+
 		dc.setColor(Gfx.COLOR_DK_GRAY, COLOR_BACKGROUND);
 		dc.setPenWidth(lineWidth);	
-		dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, fullAngle); 
+		dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, fullAngle);
 		
 		if (toppedValueAngle != startAngle) {
-			dc.setPenWidth(lineWidth + 3);
+			dc.setPenWidth(lineWidth + 1);
 			dc.setColor(color, COLOR_BACKGROUND);
-			dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, toppedValueAngle);
+			dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, startAngle, toppedValueAngle - 10);
+			dc.setPenWidth(lineWidth + 4);
+			dc.drawArc(centerX, centerY, radius, Gfx.ARC_CLOCKWISE, toppedValueAngle, toppedValueAngle - 10);
 		}
 	}
 	
